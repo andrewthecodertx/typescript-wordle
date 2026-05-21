@@ -240,8 +240,8 @@ function injectStyles(): void {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
-      padding: 16px 0;
+      gap: clamp(6px, 2vmin, 16px);
+      padding: clamp(4px, 1.5vmin, 16px) 0;
       max-width: 500px;
       margin: 0 auto;
       user-select: none;
@@ -249,30 +249,24 @@ function injectStyles(): void {
     .wordle-board {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: clamp(4px, 0.8vmin, 6px);
     }
     .wordle-row {
       display: flex;
-      gap: 6px;
+      gap: clamp(4px, 0.8vmin, 6px);
     }
     .wordle-cell {
-      width: 58px;
-      height: 58px;
+      --cell-size: clamp(40px, 11.5vmin, 58px);
+      width: var(--cell-size);
+      height: var(--cell-size);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
+      font-size: clamp(1.2rem, 4.5vmin, 2rem);
       font-weight: 700;
       border: 2px solid #52525b;
       text-transform: uppercase;
       transition: background-color 0.3s, border-color 0.3s;
-    }
-    @media (max-width: 400px) {
-      .wordle-cell {
-        width: 48px;
-        height: 48px;
-        font-size: 1.5rem;
-      }
     }
     .wordle-cell-pop {
       animation: pop 100ms ease;
@@ -310,6 +304,7 @@ function injectStyles(): void {
       border-radius: 4px;
       background: #18181b;
       border: 1px solid #52525b;
+      flex-shrink: 0;
     }
     .wordle-message-show {
       opacity: 1;
@@ -322,27 +317,29 @@ function injectStyles(): void {
     .wordle-kb {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: clamp(4px, 0.6vmin, 6px);
       width: 100%;
       max-width: 500px;
+      flex-shrink: 0;
     }
     .wordle-kb-row {
       display: flex;
-      gap: 5px;
+      gap: clamp(3px, 0.5vmin, 5px);
       justify-content: center;
     }
     .wordle-kb-row-offset {
-      padding-left: 24px;
+      padding-left: 0;
     }
     .wordle-key {
-      height: 52px;
-      min-width: 34px;
-      padding: 0 8px;
+      height: clamp(42px, 7vmin, 52px);
+      flex: 1;
+      min-width: 0;
+      padding: 0;
       border: 1px solid #3f3f46;
       background: #27272a;
       color: #e4e4e7;
       font-family: monospace;
-      font-size: 0.85rem;
+      font-size: clamp(0.65rem, 2vmin, 0.85rem);
       font-weight: 700;
       cursor: pointer;
       text-transform: uppercase;
@@ -353,8 +350,8 @@ function injectStyles(): void {
       background: #3f3f46;
     }
     .wordle-key-wide {
-      min-width: 56px;
-      font-size: 0.75rem;
+      flex: 1.5;
+      font-size: clamp(0.55rem, 1.6vmin, 0.75rem);
     }
     .wordle-new-game {
       display: none;
