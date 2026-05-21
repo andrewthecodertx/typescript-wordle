@@ -1,0 +1,15 @@
+{
+  "name": "typescript-wordle",
+  "version": "1.0.0",
+  "description": "A browser-based Wordle clone built with TypeScript",
+  "scripts": {
+    "build": "tsc && esbuild src/main.ts --bundle --outfile=dist/wordle.js --format=iife --target=es2020 --minify",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "typescript": "^5.7.0"
+  },
+  "license": "MIT"
+}
