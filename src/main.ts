@@ -230,9 +230,11 @@ function initGame(): void {
   render();
 }
 
-// Inject styles
+// Inject styles (idempotent — won't duplicate if called again)
 function injectStyles(): void {
+  if (document.getElementById('wordle-styles')) return;
   const style = document.createElement('style');
+  style.id = 'wordle-styles';
   style.textContent = `
     .wordle-container {
       display: flex;
@@ -375,25 +377,42 @@ function injectStyles(): void {
   document.head.appendChild(style);
 }
 
-// Boot
-document.addEventListener('DOMContentLoaded', () => {
+// Keyboard handler — stored on window so removeEventListener works across IIFE re-executions
+// (Astro View Transitions re-runs the script as a new IIFE, creating new function references)
+const _onKeydown = (e: KeyboardEvent): void => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.key === 'Enter') {
+    handleInput('enter');
+  } else if (e.key === 'Backspace') {
+    handleInput('⌫');
+  } else if (/^[a-zA-Z]$/.test(e.key)) {
+    handleInput(e.key.toLowerCase());
+  }
+};
+
+function boot(): void {
+  // Remove any previous keyboard listener from a prior boot (Astro client-side navigation)
+  const prevHandler = (window as any).__wordleKeydown;
+  if (prevHandler) {
+    document.removeEventListener('keydown', prevHandler);
+  }
+  document.addEventListener('keydown', _onKeydown);
+  (window as any).__wordleKeydown = _onKeydown;
+
   injectStyles();
   initGame();
-
-  // Physical keyboard input
-  document.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (e.ctrlKey || e.metaKey || e.altKey) return;
-    if (e.key === 'Enter') {
-      handleInput('enter');
-    } else if (e.key === 'Backspace') {
-      handleInput('⌫');
-    } else if (/^[a-zA-Z]$/.test(e.key)) {
-      handleInput(e.key.toLowerCase());
-    }
-  });
 
   // New game button
   $('wordle-new-game').addEventListener('click', () => {
     initGame();
   });
-});
+}
+
+// Support both initial page load and client-side navigation (e.g. Astro View Transitions).
+// DOMContentLoaded fires only on hard page loads; when navigating via client-side routing,
+// the DOM is already ready by the time the script executes.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot);
+} else {
+  boot();
+}
